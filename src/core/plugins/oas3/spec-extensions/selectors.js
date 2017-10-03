@@ -1,17 +1,17 @@
 import { createSelector } from "reselect"
 import { Map } from "immutable"
-import { isOAS3 as isOAS3Helper, isSwagger2 as isSwagger2Helper } from "./helpers"
+import { isOAS3 as isOAS3Helper, isSwagger2 as isSwagger2Helper } from "../helpers"
 
 
 // Helpers
 
 function onlyOAS3(selector) {
-  return (ori, system) => (...args) => {
+  return () => (system, ...args) => {
     const spec = system.getSystem().specSelectors.specJson()
     if(isOAS3Helper(spec)) {
       return selector(...args)
     } else {
-      return ori(...args)
+      return null
     }
   }
 }
@@ -19,10 +19,6 @@ function onlyOAS3(selector) {
 const state = state => {
   return state || Map()
 }
-
-const nullSelector =  createSelector(() => null)
-
-const OAS3NullSelector = onlyOAS3(nullSelector)
 
 const specJson = createSelector(
   state,
@@ -41,25 +37,12 @@ const spec = state => {
   return res
 }
 
-// Wrappers
-
-export const definitions = onlyOAS3(createSelector(
-  spec,
-  spec => spec.getIn(["components", "schemas"]) || Map()
-))
-
-export const host = OAS3NullSelector
-export const basePath = OAS3NullSelector
-export const consumes = OAS3NullSelector
-export const produces = OAS3NullSelector
-export const schemes = OAS3NullSelector
-
 // New selectors
 
-export const isOAS3 = (ori, system) => () => {
-  const spec = system.getSystem().specSelectors.specJson()
-  return isOAS3Helper(spec)
-}
+export const servers = onlyOAS3(createSelector(
+  spec,
+  spec => spec.getIn(["servers"]) || Map()
+))
 
 export const isSwagger2 = (ori, system) => () => {
   const spec = system.getSystem().specSelectors.specJson()
