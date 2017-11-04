@@ -71,10 +71,16 @@
 <script src="./swagger-ui-standalone-preset.js"> </script>
 <script>
 window.onload = function() {
-  
+
+  let defaultSpecMgrHostname = window.location.hostname
+  let defaultSpecMgrPort = eval(window.location.port) + 1
+  let curSpecMgr = "http://" +
+      defaultSpecMgrHostname + ":" +
+      defaultSpecMgrPort
+
   // Build a system
   const ui = SwaggerUIBundle({
-    url: "http://petstore.swagger.io/v2/swagger.json",
+    url: curSpecMgr + '/api-docs',
     dom_id: '#swagger-ui',
     deepLinking: true,
     presets: [
