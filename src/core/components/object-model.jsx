@@ -21,6 +21,10 @@ export default class ObjectModel extends Component {
     let { specSelectors } = otherProps
     let { isOAS3 } = specSelectors
 
+    if(!schema) {
+      return null
+    }
+
     let description = schema.get("description")
     let properties = schema.get("properties")
     let additionalProperties = schema.get("additionalProperties")
@@ -72,13 +76,14 @@ export default class ObjectModel extends Component {
               {
                 !(properties && properties.size) ? null : properties.entrySeq().map(
                     ([key, value]) => {
+                      let isDeprecated = isOAS3() && value.get("deprecated")
                       let isRequired = List.isList(requiredProperties) && requiredProperties.contains(key)
                       let propertyStyle = { verticalAlign: "top", paddingRight: "0.2em" }
                       if ( isRequired ) {
                         propertyStyle.fontWeight = "bold"
                       }
 
-                      return (<tr key={key}>
+                      return (<tr key={key} className={isDeprecated && "deprecated"}>
                         <td style={ propertyStyle }>
                           { key }{ isRequired && <span style={{ color: "red" }}>*</span> }
                         </td>

@@ -7,8 +7,7 @@ import * as AllPlugins from "core/plugins/all"
 import { parseSearch } from "core/utils"
 
 if (process.env.NODE_ENV !== "production") {
-  const Perf = require("react-addons-perf")
-  window.Perf = Perf
+  window.Perf = require("react-addons-perf")
 }
 
 // eslint-disable-next-line no-undef
@@ -58,13 +57,12 @@ module.exports = function SwaggerUI(opts) {
     plugins: [
     ],
 
+    // Initial state
+    initialState: { },
+
     // Inline Plugin
     fn: { },
     components: { },
-    state: { },
-
-    // Override some core configs... at your own risk
-    store: { },
   }
 
   let queryConfig = parseSearch()
@@ -74,12 +72,12 @@ module.exports = function SwaggerUI(opts) {
 
   const constructorConfig = deepExtend({}, defaults, opts, queryConfig)
 
-  const storeConfigs = deepExtend({}, constructorConfig.store, {
+  const storeConfigs = {
     system: {
       configs: constructorConfig.configs
     },
     plugins: constructorConfig.presets,
-    state: {
+    state: deepExtend({
       layout: {
         layout: constructorConfig.layout,
         filter: constructorConfig.filter
@@ -88,8 +86,8 @@ module.exports = function SwaggerUI(opts) {
         spec: "",
         url: constructorConfig.url
       }
-    }
-  })
+    }, constructorConfig.initialState)
+  }
 
   let inlinePlugin = ()=> {
     return {
