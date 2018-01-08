@@ -7,7 +7,7 @@
 # env
 #---------------------------------------------------------------------------------------------------
 readonly DIR_SCRIPT="$(dirname $0)"
-cd "$(cd ${DIR_SCRIPT}; pwd)" || exit 6
+cd "$(cd ${DIR_SCRIPT}; cd ..; pwd)" || exit 6
 
 readonly DIR_BASE="$(pwd)"
 readonly DIR_DIST="${DIR_BASE}/dist"
@@ -85,10 +85,9 @@ cp -p "${DIR_DIST}"/* "${DIR_ARCHIVE}/"
 cd "${DIR_ARCHIVE_DIST}"
 tar czf ./${ARCHIVE_NAME}.tar.gz ./${ARCHIVE_NAME}
 md5sum  ./${ARCHIVE_NAME}.tar.gz | cut -d ' ' -f 1 > ./${ARCHIVE_NAME}.tar.gz.md5
-sha1sum ./${ARCHIVE_NAME}.tar.gz | cut -d ' ' -f 1 > ./${ARCHIVE_NAME}.tar.gz.sha1
 
 echo ""
 echo "remove archive dir"
-rm -fr "${DIR_ARCHIVE}/"
+rm -fr "${DIR_ARCHIVE:?}/"
 
 exit 0
