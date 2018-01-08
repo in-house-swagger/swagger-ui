@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react"
 import PropTypes from "prop-types"
+import ImPropTypes from "react-immutable-proptypes"
 import { helpers } from "swagger-client"
 import { Iterable, fromJS } from "immutable"
 
@@ -31,10 +32,11 @@ export default class OperationContainer extends PureComponent {
     request: PropTypes.instanceOf(Iterable),
     security: PropTypes.instanceOf(Iterable),
     isDeepLinkingEnabled: PropTypes.bool.isRequired,
-
+    specPath: ImPropTypes.list.isRequired,
     getComponent: PropTypes.func.isRequired,
     authActions: PropTypes.object,
     oas3Actions: PropTypes.object,
+    oas3Selectors: PropTypes.object,
     authSelectors: PropTypes.object,
     specActions: PropTypes.object.isRequired,
     specSelectors: PropTypes.object.isRequired,
@@ -140,6 +142,7 @@ export default class OperationContainer extends PureComponent {
       displayOperationId,
       displayRequestDuration,
       isDeepLinkingEnabled,
+      specPath,
       specSelectors,
       specActions,
       getComponent,
@@ -149,6 +152,7 @@ export default class OperationContainer extends PureComponent {
       authActions,
       authSelectors,
       oas3Actions,
+      oas3Selectors,
       fn
     } = this.props
 
@@ -185,10 +189,12 @@ export default class OperationContainer extends PureComponent {
         onTryoutClick={this.onTryoutClick}
         onCancelClick={this.onCancelClick}
         onExecute={this.onExecute}
+        specPath={specPath}
 
         specActions={ specActions }
         specSelectors={ specSelectors }
         oas3Actions={oas3Actions}
+        oas3Selectors={oas3Selectors}
         layoutActions={ layoutActions }
         layoutSelectors={ layoutSelectors }
         authActions={ authActions }
