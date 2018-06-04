@@ -161,7 +161,10 @@ class Parameters extends Component {
         </div> : "" }
 
         {this.state.callbackVisible ? <div className="callbacks-container opblock-description-wrapper">
-          <Callbacks callbacks={Map(operation.get("callbacks"))} />
+          <Callbacks
+            callbacks={Map(operation.get("callbacks"))}
+            specPath={specPath.slice(0, -1).push("callbacks")}
+          />
         </div> : "" }
         {
           isOAS3() && requestBody && this.state.parametersVisible &&
@@ -182,8 +185,17 @@ class Parameters extends Component {
               <RequestBody
                 specPath={requestBodySpecPath}
                 requestBody={requestBody}
+                requestBodyValue={oas3Selectors.requestBodyValue(...pathMethod) || Map()}
                 isExecute={isExecute}
-                onChange={(value) => {
+                onChange={(value, path) => {
+                  if(path) {
+                    const lastValue = oas3Selectors.requestBodyValue(...pathMethod)
+                    const usableValue = Map.isMap(lastValue) ? lastValue : Map()
+                    return oas3Actions.setRequestBodyValue({
+                      pathMethod,
+                      value: usableValue.setIn(path, value)
+                    })
+                  }
                   oas3Actions.setRequestBodyValue({ value, pathMethod })
                 }}
                 contentType={oas3Selectors.requestContentType(...pathMethod)}/>
